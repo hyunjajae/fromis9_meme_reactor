@@ -51,9 +51,9 @@ import platform; import platform; import platform; FONT_PATH = "C:/Windows/Fonts
 # =====================================================================
 # 2. MediaPipe 준비
 # =====================================================================
-mp_hands = mp.solutions.hands
-mp_face = mp.solutions.face_mesh
-mp_draw = mp.solutions.drawing_utils
+from mediapipe.python.solutions import hands as mp_hands
+from mediapipe.python.solutions import face_mesh as mp_face
+from mediapipe.python.solutions import drawing_utils as mp_draw
 
 # 손 랜드마크(점·선) 표시 스타일
 HAND_DOT_STYLE = mp_draw.DrawingSpec(color=(0, 255, 0), thickness=2, circle_radius=4)
