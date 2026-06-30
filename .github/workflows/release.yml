@@ -32,20 +32,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller opencv-python numpy mediapipe Pillow ffpyplayer
 
-      - name: PyInstaller 빌드 (Windows)
+      - name: PyInstaller 폴더 강제 주입 빌드 (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          pyinstaller --onefile --collect-all mediapipe --collect-all ffpyplayer main.py
+          python -c "import PyInstaller.__main__, mediapipe, os; mp_dir = os.path.dirname(mediapipe.__file__); PyInstaller.__main__.run(['main.py', '--onefile', f'--add-data={mp_dir};mediapipe', '--collect-all=mediapipe', '--collect-all=ffpyplayer'])"
 
-      - name: PyInstaller 빌드 (macOS)
+      - name: PyInstaller 폴더 강제 주입 빌드 (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          pyinstaller --onefile --windowed --collect-all mediapipe --collect-all ffpyplayer main.py
+          python -c "import PyInstaller.__main__, mediapipe, os; mp_dir = os.path.dirname(mediapipe.__file__); PyInstaller.__main__.run(['main.py', '--onefile', '--windowed', f'--add-data={mp_dir}:mediapipe', '--collect-all=mediapipe', '--collect-all=ffpyplayer'])"
           cd dist
           zip -r main-mac.zip main.app
           cd ..
 
-      - name: GitHub Release 생성 및 업로드
+      - name: GitHub Release 업로드
         uses: softprops/action-gh-release@v2
         with:
           files: |
