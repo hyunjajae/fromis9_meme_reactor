@@ -181,19 +181,18 @@ def detect_meme(face, hands, frowning):
     if face is not None and mouth_ratio >= MOUTH_OPEN_RATIO:
         return "송하영_그만말해인제"
 
-        # ---- 5순위: 날놔라집사 (손 미검출 + 찡그린 표정) ----------------
-        if 'frown_cnt' not in globals(): globals()['frown_cnt'] = 0
-        
-        if n == 0 and face is not None and frowning:
-            globals()['frown_cnt'] += 1
-            if globals()['frown_cnt'] >= 6:  # 6프레임 누적 시 발동 (깜빡임은 보통 2~3프레임이므로 완벽 무시)
-                globals()['frown_cnt'] = 0
-                return "이나경_날놔라집사"
-        else:
-            # 찡그림이 유지되는 동안 AI가 1~2프레임 놓치더라도 타이머가 0으로 즉시 리셋되지 않게 서서히 차감
-            globals()['frown_cnt'] = max(0, globals()['frown_cnt'] - 1)
+    # ---- 5순위: 날놔라집사 (손 미검출 + 찡그린 표정) ----------------
+    if not hasattr(detect_meme, "frown_cnt"):
+        detect_meme.frown_cnt = 0
 
-        return None
+    if n == 0 and face is not None and frowning:
+        detect_meme.frown_cnt += 1
+        if detect_meme.frown_cnt >= 15: 
+            return "이나경_날놔라집사"
+    else:
+        detect_meme.frown_cnt = max(0, detect_meme.frown_cnt - 2)
+
+    return None
 
 
 # =====================================================================
