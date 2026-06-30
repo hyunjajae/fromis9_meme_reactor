@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: 소스 체크아웃
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: 파이썬(Python) 설정
         uses: actions/setup-python@v5
@@ -39,15 +41,3 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           pyinstaller --onefile --windowed main.py
-          cd dist
-          zip -r main-mac.zip main.app
-          cd ..
-
-      - name: GitHub Release 생성 및 업로드
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/*.exe
-            dist/*.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
