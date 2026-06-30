@@ -1,0 +1,9 @@
+# fromis_9 Meme Reactor - required packages
+# Install:  pip install -r requirements.txt
+# (If you hit conflicts, use a Python 3.10 / 3.11 virtual environment)
+
+opencv-python      # webcam I/O + meme video display
+ffpyplayer         # meme video sound + frames (ffmpeg bundled)
+mediapipe==0.10.21 # hand 21 landmarks + face mesh (pin: 0.10.21 still ships the legacy mp.solutions API; newer builds dropped it)
+pillow             # draw Korean text on screen
+numpy<2.0          # safe pin for mediapipe compatibility
