@@ -181,17 +181,19 @@ def detect_meme(face, hands, frowning):
     if face is not None and mouth_ratio >= MOUTH_OPEN_RATIO:
         return "송하영_그만말해인제"
 
-    # ---- 5순위: 날놔라집사 (손 미검출 + 찡그린 표정) ----------------
-    if 'frown_frames' not in globals(): globals()['frown_frames'] = 0
-    if n == 0 and face is not None and frowning:
-        globals()['frown_frames'] += 1
-        if globals()['frown_frames'] >= 20:  # 약 1초(20프레임) 연속 유지 시 발동
-            globals()['frown_frames'] = 0    # 중복 실행 방지를 위한 초기화
-            return "이나경_날놔라집사"
-    else:
-        globals()['frown_frames'] = 0        # 표정이 풀리면 타이머 즉시 리셋
+        # ---- 5순위: 날놔라집사 (손 미검출 + 찡그린 표정) ----------------
+        if 'frown_cnt' not in globals(): globals()['frown_cnt'] = 0
+        
+        if n == 0 and face is not None and frowning:
+            globals()['frown_cnt'] += 1
+            if globals()['frown_cnt'] >= 6:  # 6프레임 누적 시 발동 (깜빡임은 보통 2~3프레임이므로 완벽 무시)
+                globals()['frown_cnt'] = 0
+                return "이나경_날놔라집사"
+        else:
+            # 찡그림이 유지되는 동안 AI가 1~2프레임 놓치더라도 타이머가 0으로 즉시 리셋되지 않게 서서히 차감
+            globals()['frown_cnt'] = max(0, globals()['frown_cnt'] - 1)
 
-    return None
+        return None
 
 
 # =====================================================================
@@ -460,3 +462,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
