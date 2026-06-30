@@ -30,26 +30,28 @@ jobs:
       - name: 의존성 패키지 설치
         run: |
           python -m pip install --upgrade pip
-          pip install pyinstaller opencv-python numpy mediapipe Pillow ffpyplayer
+          pip install pyinstaller opencv-python numpy mediapipe==0.10.14 Pillow ffpyplayer
 
-      - name: PyInstaller 폴더 강제 주입 빌드 (Windows)
+      - name: PyInstaller 빌드 (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          python -c "import PyInstaller.__main__, mediapipe, os; mp_dir = os.path.dirname(mediapipe.__file__); PyInstaller.__main__.run(['main.py', '--onefile', f'--add-data={mp_dir};mediapipe', '--collect-all=mediapipe', '--collect-all=ffpyplayer'])"
+          pyinstaller --onedir --noconsole --collect-all mediapipe --collect-all ffpyplayer main.py
+          Copy-Item -Path "memes" -Destination "dist\main\memes" -Recurse
+          Compress-Archive -Path "dist\main" -DestinationPath "dist\windows-app.zip"
 
-      - name: PyInstaller 폴더 강제 주입 빌드 (macOS)
+      - name: PyInstaller 빌드 (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          python -c "import PyInstaller.__main__, mediapipe, os; mp_dir = os.path.dirname(mediapipe.__file__); PyInstaller.__main__.run(['main.py', '--onefile', '--windowed', f'--add-data={mp_dir}:mediapipe', '--collect-all=mediapipe', '--collect-all=ffpyplayer'])"
+          pyinstaller --onedir --windowed --noconsole --collect-all mediapipe --collect-all ffpyplayer main.py
+          cp -r memes dist/
           cd dist
-          zip -r main-mac.zip main.app
+          zip -r macos-app.zip main.app memes
           cd ..
 
       - name: GitHub Release 업로드
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/*.exe
             dist/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
