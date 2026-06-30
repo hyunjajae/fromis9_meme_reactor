@@ -35,12 +35,12 @@ jobs:
       - name: PyInstaller 빌드 (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          pyinstaller --onefile --hidden-import=mediapipe.python.solutions.hands --hidden-import=mediapipe.python.solutions.face_mesh --hidden-import=mediapipe.python.solutions.drawing_utils main.py
+          pyinstaller --onefile --collect-all mediapipe --collect-all ffpyplayer main.py
 
       - name: PyInstaller 빌드 (macOS)
         if: matrix.os == 'macos-latest'
         run: |
-          pyinstaller --onefile --windowed --hidden-import=mediapipe.python.solutions.hands --hidden-import=mediapipe.python.solutions.face_mesh --hidden-import=mediapipe.python.solutions.drawing_utils main.py
+          pyinstaller --onefile --windowed --collect-all mediapipe --collect-all ffpyplayer main.py
           cd dist
           zip -r main-mac.zip main.app
           cd ..
