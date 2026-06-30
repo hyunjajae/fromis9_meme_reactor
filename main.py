@@ -182,8 +182,14 @@ def detect_meme(face, hands, frowning):
         return "송하영_그만말해인제"
 
     # ---- 5순위: 날놔라집사 (손 미검출 + 찡그린 표정) ----------------
+    if 'frown_frames' not in globals(): globals()['frown_frames'] = 0
     if n == 0 and face is not None and frowning:
-        return "이나경_날놔라집사"
+        globals()['frown_frames'] += 1
+        if globals()['frown_frames'] >= 20:  # 약 1초(20프레임) 연속 유지 시 발동
+            globals()['frown_frames'] = 0    # 중복 실행 방지를 위한 초기화
+            return "이나경_날놔라집사"
+    else:
+        globals()['frown_frames'] = 0        # 표정이 풀리면 타이머 즉시 리셋
 
     return None
 
